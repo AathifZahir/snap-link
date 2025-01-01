@@ -9,4 +9,6 @@ router.get("/", (req, res) => {
 
 router.post("/", createShortUrl);
 
+router.post("/:surl");
+
 module.exports = router;

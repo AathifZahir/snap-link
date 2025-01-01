@@ -15,6 +15,8 @@ mongo
     console.log(err);
   });
 
+app.use(express.json());
+
 app.get("/", (req, res) => {
   console.log("Request received");
   res.status(200).send("Hello World");
