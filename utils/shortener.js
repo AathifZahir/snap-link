@@ -1,12 +1,12 @@
-const base62 = require("base62/lib/ascii");
+import base62 from "base62";
 
 function generateShortUrl(orgUrl, uid) {
-  const baseUrl = "http://localhost:3000/";
-  const shortUrl = base62.encode(parseInt(uid, 16));
-  console.log(`Short URL: ${shortUrl}`);
-  const sUrl = `${baseUrl}${shortUrl}`;
+  const baseUrl = "http://localhost:3000/shorten/";
+  const sUrlKey = base62.encode(parseInt(uid, 16));
+  console.log(`Short URL: ${sUrlKey}`);
+  const sUrl = `${baseUrl}${sUrlKey}`;
   console.log(`Generated short URL: ${sUrl}`);
-  return sUrl;
+  return { sUrl, sUrlKey };
 }
 
-module.exports = generateShortUrl;
+export default generateShortUrl;

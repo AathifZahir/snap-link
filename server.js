@@ -1,9 +1,12 @@
-const express = require("express");
+import express from "express";
+import urlRouter from "./routes/urlRoute.js";
+import mongo from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const app = express();
 const PORT = 3000;
-const urlRouter = require("./routes/urlRoute");
-const mongo = require("mongoose");
-require("dotenv").config();
 
 //Mongo Connection
 mongo

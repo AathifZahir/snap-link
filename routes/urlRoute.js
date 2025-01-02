@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import { createShortUrl, getShortUrl } from "../controllers/urlController.js";
+
 const router = express.Router();
-const { createShortUrl } = require("../controllers/urlController");
 
 router.get("/", (req, res) => {
   console.log("Request received");
@@ -9,6 +10,6 @@ router.get("/", (req, res) => {
 
 router.post("/", createShortUrl);
 
-router.post("/:surl");
+router.get("/:surl", getShortUrl);
 
-module.exports = router;
+export default router;

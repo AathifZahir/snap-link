@@ -1,9 +1,9 @@
-const UrlModel = require("../models/urlModel");
-const generateShortUrl = require("../utils/shortener");
+import UrlModel from "../models/urlModel.js";
+import generateShortUrl from "../utils/shortener.js";
+import { nanoid, customAlphabet } from "nanoid";
 
 const createShortUrl = async (req, res) => {
   try {
-    const { nanoid, customAlphabet } = await import("nanoid");
     console.log("importing nanoid");
 
     const orgUrl = req.body?.orgUrl;
@@ -12,6 +12,7 @@ const createShortUrl = async (req, res) => {
     }
     console.log(orgUrl);
 
+    // Check if URL already exists
     const link = await UrlModel.findOne({ orgUrl });
     if (link) {
       console.log(`Redirecting to ${link.sUrl}`);
@@ -19,15 +20,16 @@ const createShortUrl = async (req, res) => {
       return res.redirect(link.sUrl);
     }
 
+    // Generate key and short URL
     const generateKey = customAlphabet("1234567890", 6);
     const key = generateKey();
     console.log(key);
-    const sUrl = generateShortUrl(orgUrl, key);
+    const { sUrl, sUrlKey } = generateShortUrl(orgUrl, key);
     console.log(sUrl);
     console.log("Short URL generated");
 
-    const url = new UrlModel({ key, orgUrl, sUrl });
-
+    // Save the new mapping to the database
+    const url = new UrlModel({ key, orgUrl, sUrl, sUrlKey });
     console.log(url);
     await url.save();
 
@@ -41,10 +43,12 @@ const createShortUrl = async (req, res) => {
 
 const getShortUrl = async (req, res) => {
   try {
-    const sUrl = req.params.surl;
-    console.log(sUrl);
+    const sUrlKey = req.params.surl;
+    console.log(sUrlKey);
 
-    const link = await UrlModel.findOne({ sUrl: sUrl });
+    // Find the original URL based on the short URL
+    const link = await UrlModel.findOne({ sUrlKey });
+    console.log(link);
 
     if (!link) {
       return res.status(404).send("Short URL not found.");
@@ -60,4 +64,5 @@ const getShortUrl = async (req, res) => {
   }
 };
 
-module.exports = { createShortUrl };
+// Export the functions
+export { createShortUrl, getShortUrl };
