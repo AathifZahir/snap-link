@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+//Mongo Schema
 const urlSchema = new mongoose.Schema({
   key: { type: String, required: true },
   orgUrl: { type: String, required: true },

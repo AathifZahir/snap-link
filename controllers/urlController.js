@@ -1,12 +1,15 @@
 import UrlModel from "../models/urlModel.js";
 import generateShortUrl from "../utils/shortener.js";
-import { nanoid, customAlphabet } from "nanoid";
+import { customAlphabet } from "nanoid";
 
+// Create short URL
 const createShortUrl = async (req, res) => {
   try {
     console.log("importing nanoid");
 
     const orgUrl = req.body?.orgUrl;
+
+    // Check if original URL is provided
     if (!orgUrl) {
       return res.status(400).send("Original URL is required.");
     }
@@ -20,15 +23,15 @@ const createShortUrl = async (req, res) => {
       return res.redirect(link.sUrl);
     }
 
-    // Generate key and short URL
-    const generateKey = customAlphabet("1234567890", 6);
+    // Generate short URL
+    const generateKey = customAlphabet("1234567890", 6); // Generate 6-character key
     const key = generateKey();
     console.log(key);
-    const { sUrl, sUrlKey } = generateShortUrl(orgUrl, key);
+    const { sUrl, sUrlKey } = generateShortUrl(key);
     console.log(sUrl);
     console.log("Short URL generated");
 
-    // Save the new mapping to the database
+    // Save short URL to database
     const url = new UrlModel({ key, orgUrl, sUrl, sUrlKey });
     console.log(url);
     await url.save();
@@ -41,12 +44,13 @@ const createShortUrl = async (req, res) => {
   }
 };
 
+// Get original URL and redirect
 const getShortUrl = async (req, res) => {
   try {
     const sUrlKey = req.params.surl;
     console.log(sUrlKey);
 
-    // Find the original URL based on the short URL
+    // Find short URL in database
     const link = await UrlModel.findOne({ sUrlKey });
     console.log(link);
 
@@ -54,6 +58,7 @@ const getShortUrl = async (req, res) => {
       return res.status(404).send("Short URL not found.");
     }
 
+    // Redirect to original URL
     console.log(`Redirecting to ${link.orgUrl}`);
     res.redirect(link.orgUrl);
   } catch (err) {
@@ -64,5 +69,4 @@ const getShortUrl = async (req, res) => {
   }
 };
 
-// Export the functions
 export { createShortUrl, getShortUrl };

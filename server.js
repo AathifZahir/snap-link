@@ -25,6 +25,7 @@ app.get("/", (req, res) => {
   res.status(200).send("Hello World");
 });
 
+//shortener route
 app.use("/shorten", urlRouter);
 
 app.listen(PORT, () => console.log(`Server ready on http://localhost:${PORT}`));
